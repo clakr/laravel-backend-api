@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
@@ -21,11 +22,18 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        return User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make('password')
-        ]);
+        try {
+            return User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make('password'),
+            ])->refresh();
+        } catch (\Exception $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
     }
 
     /**
