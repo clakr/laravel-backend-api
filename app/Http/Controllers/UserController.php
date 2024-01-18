@@ -49,7 +49,16 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        try {
+            return tap($user)->update([
+                'name' => $request->name,
+                'email' => $request->email,
+            ]);
+        } catch (\Exception $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
