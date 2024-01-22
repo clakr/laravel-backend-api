@@ -14,5 +14,10 @@ class UserSeeder extends Seeder
     {
         User::factory(5)->unverified()->create();
         User::factory(5)->create();
+        User::create([
+            'name' => 'Clark Tolosa',
+            'email' => 'clarktolosa@gmail.com',
+            'password' => 'password',
+        ]);
     }
 }
