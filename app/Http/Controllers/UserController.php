@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -15,7 +17,13 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::all();
+        try {
+            return Cache::remember('users', 60, fn() => UserResource::collection(User::all())) ;
+        } catch (\Exception $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
@@ -41,7 +49,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        
     }
 
     /**
